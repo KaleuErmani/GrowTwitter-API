@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String  @id @default(uuid()) @db.Uuid
+  nome     String  @db.VarChar(60)
+  email    String  @unique @db.VarChar(60)
+  username String  @db.VarChar(50)
+  senha    String
+  token    String?
+
+  tweets     Tweet[]
+  likes      Like[]
+  replies    Reply[]
+  seguindo   Seguidor[] @relation("user_seguindo")
+  seguidores Seguidor[] @relation("user_seguidor")
+
+  @@map("users")
+}
+
+enum tipoPost {
+  tweet
+  reply
+}
+
+model Tweet {
+  id       String   @id @default(uuid()) @db.Uuid
+  conteudo String   @db.VarChar(500)
+  tipo     tipoPost
+  userId   String   @db.Uuid
+
+  user    User    @relation(fields: [userId], references: [id])
+  likes   Like[]
+  replies Reply[]
+
+  @@map("tweets")
+}
+
+model Like {
+  id      String @id @default(uuid()) @db.Uuid
+  userId  String @db.Uuid
+  tweetId String @db.Uuid
+
+  user  User  @relation(fields: [userId], references: [id])
+  tweet Tweet @relation(fields: [tweetId], references: [id])
+
+  @@map("likes")
+}
+
+model Reply {
+  id       String   @id @default(uuid()) @db.Uuid
+  conteudo String   @db.VarChar(500)
+  tipo     tipoPost
+  tweetId  String   @db.Uuid
+  userId   String   @db.Uuid
+
+  tweet Tweet @relation(fields: [tweetId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@map("replies")
+}
+
+model Seguidor {
+  id         String @id @default(uuid()) @db.Uuid
+  userId     String @db.Uuid
+  seguidorId String @db.Uuid
+
+  user     User @relation("user_seguindo", fields: [userId], references: [id])
+  seguidor User @relation("user_seguidor", fields: [seguidorId], references: [id])
+
+  @@map("seguidores")
+}
