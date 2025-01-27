@@ -1,9 +1,7 @@
 import { repository } from "../database/prisma.connection";
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
-
 import { User } from "../models/users.model";
-import { randomUUID } from "crypto";
 
 export class UserController {
   // index -> lista todos os usuarios
@@ -36,7 +34,7 @@ export class UserController {
   // store -> cria um novo usuario
   public async store(request: Request, response: Response) {
     try {
-      const { nome, email, username, senha } = request.body;
+      const { nome, email, username, senha, imagemDePerfil } = request.body;
 
       if (!nome || !email || !username || !senha) {
         return response.status(400).json({
@@ -46,7 +44,7 @@ export class UserController {
         });
       }
 
-      const newUser = new User(nome, email, username, senha);
+      const newUser = new User(nome, email, username, senha, imagemDePerfil);
 
       const hashedPassword = await bcrypt.hash(senha, 10);
 
@@ -57,6 +55,7 @@ export class UserController {
           email: newUser.email,
           username: newUser.username,
           senha: hashedPassword,
+          imagemDePerfil: newUser.imagemDePerfil,
         },
         select: {
           id: true,

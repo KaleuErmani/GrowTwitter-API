@@ -14,12 +14,13 @@ datasource db {
 }
 
 model User {
-  id       String  @id @default(uuid()) @db.Uuid
-  nome     String  @db.VarChar(60)
-  email    String  @unique @db.VarChar(60)
-  username String  @db.VarChar(50)
-  senha    String
-  token    String?
+  id             String  @id @default(uuid()) @db.Uuid
+  nome           String  @db.VarChar(60)
+  email          String  @unique @db.VarChar(60)
+  username       String  @db.VarChar(50)
+  senha          String
+  token          String?
+  imagemDePerfil String? @map("imagem_de_perfil")
 
   tweets     Tweet[]
   likes      Like[]

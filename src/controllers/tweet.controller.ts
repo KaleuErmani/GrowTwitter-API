@@ -242,4 +242,16 @@ export class TweetController {
       });
     }
   }
+
+  // feed -> lista todos os tweets do usuario + usuarios segudios
+  public async feed(request: Request, response: Response) {
+    try {
+    } catch (error) {
+      return response.status(500).json({
+        success: false,
+        code: response.statusCode,
+        message: "Erro ao listar Tweets.",
+      });
+    }
+  }
 }
