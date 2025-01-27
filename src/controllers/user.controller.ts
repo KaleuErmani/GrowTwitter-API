@@ -44,9 +44,7 @@ export class UserController {
         });
       }
 
-      const imagem = imagemDePerfil || null;
-
-      const newUser = new User(nome, email, username, senha, imagem);
+      const newUser = new User(nome, email, username, senha);
 
       const hashedPassword = await bcrypt.hash(senha, 10);
 
@@ -57,14 +55,12 @@ export class UserController {
           email: newUser.email,
           username: newUser.username,
           senha: hashedPassword,
-          imagemDePerfil: newUser.imagemDePerfil,
         },
         select: {
           id: true,
           nome: true,
           email: true,
           username: true,
-          imagemDePerfil: true,
         },
       });
 

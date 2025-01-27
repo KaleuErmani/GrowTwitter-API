@@ -8,8 +8,7 @@ export class User {
     private _email: string,
     private _username: string,
     private _senha: string,
-    private _token?: string,
-    private _imagemDePerfil?: string
+    private _token?: string
   ) {
     this._id = randomUUID();
   }
@@ -37,9 +36,5 @@ export class User {
 
   get token(): string | undefined {
     return this._token;
-  }
-
-  get imagemDePerfil(): string | undefined {
-    return this._imagemDePerfil;
   }
 }
