@@ -30,6 +30,6 @@ router.put(
 );
 
 //feed -. lista todos os tweets dos seguidores e do usuario
-router.get("/usuarios/:userId/tweets/");
+router.get("/usuarios/:userId/feed", ValidateToken, tweetController.feed);
 
 export default router;
