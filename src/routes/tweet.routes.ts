@@ -29,4 +29,7 @@ router.put(
   tweetController.update
 );
 
+//feed -. lista todos os tweets dos seguidores e do usuario
+router.get("/usuarios/:userId/tweets/");
+
 export default router;

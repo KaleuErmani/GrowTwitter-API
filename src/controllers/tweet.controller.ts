@@ -246,11 +246,61 @@ export class TweetController {
   // feed -> lista todos os tweets do usuario + usuarios segudios
   public async feed(request: Request, response: Response) {
     try {
+      const { userId } = request.params;
+
+      const user = await repository.user.findUnique({
+        where: { id: userId },
+      });
+
+      if (!user) {
+        return response.status(404).json({
+          success: false,
+          code: response.statusCode,
+          message: "Usuário não encontrado.",
+        });
+      }
+
+      const seguindo = await repository.seguidor.findMany({
+        where: { userId },
+        select: { seguidorId: true },
+      });
+
+      const seguindoIds = seguindo.map((seguidor) => seguidor.seguidorId);
+      seguindoIds.push(userId);
+
+      const tweets = await repository.tweet.findMany({
+        where: {
+          userId: {
+            in: seguindoIds,
+          },
+        },
+        select: {
+          id: true,
+          conteudo: true,
+          tipo: true,
+          userId: true,
+          user: {
+            select: {
+              id: true,
+              nome: true,
+              username: true,
+            },
+          },
+        },
+      });
+
+      return response.status(200).json({
+        success: true,
+        code: response.statusCode,
+        message: "Feed carregado com sucesso.",
+        data: tweets,
+      });
     } catch (error) {
+      console.error("Erro ao carregar o feed:", error);
       return response.status(500).json({
         success: false,
         code: response.statusCode,
-        message: "Erro ao listar Tweets.",
+        message: "Erro ao carregar o feed. Tente novamente.",
       });
     }
   }
